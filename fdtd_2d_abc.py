@@ -179,7 +179,10 @@ class FDTD2D_TMz:
     # -------------------------------------------------
     def scatterer(self):
         self.eps[55:65, 55:65] = 1
-        j1, j2 = self.left_j - self.margin, self.right_j + self.margin
+        
+        j1 = self.left_j + self.margin
+        j2 = self.right_j - self.margin
+
         j_av = (j1 + j2) // 2
         for j in range(j1, j_av + 1):
             x = self.right_i - self.margin - (j_av - j) * np.tan(np.pi/2 - self.alpha/2)
@@ -214,12 +217,12 @@ class FDTD2D_TMz:
                        vmin=-v_amp, vmax=v_amp, origin="lower")
         y = (self.left_j + self.right_j) / 2
         x = self.margin + (y - self.left_j + self.margin) * np.tan(np.pi/2 - self.alpha/2)
-        ax.plot((self.right_i - x , self.right_i - self.margin), (self.left_j - self.margin, y), c="k", linewidth=2)
-        ax.plot((self.right_i - x , self.right_i - self.margin), (self.right_j  + self.margin, y), c="k", linewidth=2)
+        ax.plot((self.right_i - x , self.right_i - self.margin), (self.left_j + self.margin, y), c="k", linewidth=2)
+        ax.plot((self.right_i - x , self.right_i - self.margin), (self.right_j  - self.margin, y), c="k", linewidth=2)
         ax.plot((self.left_i, self.right_i), (self.left_j, self.left_j), c="g", linestyle="--", linewidth=1)
         ax.plot((self.left_i, self.right_i), (self.right_j, self.right_j), c="g", linestyle="--", linewidth=1)
         ax.plot((self.left_i, self.left_i), (self.left_j, self.right_j), c="g", linestyle="--", linewidth=1)
-        ax.plot((self.right_i, self.right_j), (self.left_j, self.right_j), c="g", linestyle="--", linewidth=1)
+        ax.plot((self.right_i, self.right_i), (self.left_j, self.right_j), c="g", linestyle="--", linewidth=1)
         plt.colorbar(im, ax=ax)
         ax.set_title("2D TMz FDTD: Ez(x,y)")
 
@@ -242,4 +245,3 @@ class FDTD2D_TMz:
 if __name__ == "__main__":
     sim = FDTD2D_TMz(Nx=120, Ny=120, Nt=1200)
     sim.animate()
-    sim.plot_incident()
